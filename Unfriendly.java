@@ -1,7 +1,10 @@
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Random;
- 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.ArrayList; 
+
 /**
  * Self-Stabilizing Algorithm
  * Based on the paper "Self-Stabilizing Algorithms for Unfriendly Partitions"
@@ -14,7 +17,7 @@ import java.util.Random;
  * @version 3/25/19
  *
  */
-public class UnfriendlyPartition
+public class Unfriendly
 {
 
     public static void main(String [] args)
@@ -31,46 +34,84 @@ public class UnfriendlyPartition
        
         // Color array to match the color of each vertex.
         // The colors are 1 & 0. 
-        boolean [] color = new int[n]; 
-
+        // 1 is equivalent to Blue (from the paper)
+        // 0 is equivalent to Red (from the paper)
+        int [] color = new int[n]; 
+        // Array to hold random permutation of nodes.
+        ArrayList<Integer> ordering = new ArrayList<Integer>();
+        // Flag for loop to determine whether the network is stable;
+        boolean unstable = true;
+        
         LinkedList<Integer> queue = new LinkedList<Integer>();
 
         Random rand = new Random();
 
-        // Initialize to random coloring.
+        // Initialize to random coloring and starting order.
         for (int i = 0; i < n; i++)
         {
             color[i] = rand.nextInt(1);
+            ordering.add(i);
         }
 
-          
-        for (int i = 0; i < n; i++)
+        System.out.println("Starting network: " + Arrays.toString(color));
+
+        Collections.shuffle(ordering);        
+
+        int blue;
+        int red;
+
+        while(unstable)
         {
-            if (!marked[i])
+            //reset unstable flag
+            unstable = false;
+            //reshuffle ordering of permutation
+            Collections.shuffle(ordering);
+
+            for (int i = 0; i < n; i++)
             {
-                numComponents++;
-                queue.add(i);
-                marked[i] = true;
-                numMarked++;
-                
-                while (!queue.isEmpty() && numMarked < n)
+                //current vertex
+                int v = ordering.get(i);
+                //reset neighbor color count
+                blue = 0;
+                red = 0;
+
+                //loop through neighbors and count how many of each color
+                Iterator<Integer> it = graph.neighbors(v);
+                while(it.hasNext())
                 {
-                    int v = queue.remove();
-                    Iterator<Integer> it = graph.neighbors(v);
-                    while (it.hasNext())
-                    {
-                        int vertex = it.next();
-                        if (!marked[vertex])
-                        {
-                            numMarked++;
-                            marked[vertex] = true;
-                            queue.add(vertex);
-                        }
-                    }
+                    int neighbor = it.next();
+                    if(color[neighbor] == 1) blue++;
+                    else red++;
+                }
+                
+                if(color[v] == 1 && blue > red) 
+                {
+                    color[v] = 0;
+                    unstable = true;
+                }
+                else if(color[v] == 0 && red > blue) 
+                {
+                    color[v] = 1;
+                    unstable = true;
                 }
             }
-            
         }
-        System.out.println("There are " + numComponents + " components.");
+        System.out.println("Ending network: " + Arrays.toString(color));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
