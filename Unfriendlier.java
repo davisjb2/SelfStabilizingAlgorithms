@@ -23,7 +23,7 @@ public class Unfriendlier
     public static void main(String [] args)
     {
         if (args.length == 0) {
-           System.out.println("Usage: java UnfriendlyPartition <filename>"); 
+           System.out.println("Usage: java Unfriendlier <filename>"); 
            System.exit(0);
         }
 
@@ -133,10 +133,7 @@ public class Unfriendlier
                             if(color[neighbor3] == 1) blue2++;
                             else red2++;
                         }
-                        if(red2 - blue2 > red - blue)
-                        {
-                            neighborsCond = false;
-                        }
+                        if(red2 - blue2 > red - blue) neighborsCond = false;
                     }
                     if(neighborsCond)
                     {
