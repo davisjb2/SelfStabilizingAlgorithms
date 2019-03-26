@@ -11,13 +11,13 @@ import java.util.ArrayList;
  * by Sandra Hedetniemi, Stephen Hedetniemi, K.E. Kennedy, and Alice McRae.
  *
  * This code is an implementation of the first algorithm from the paper
- * titled "Unfriendly".
+ * titled "Unfriendlier".
  *
  * @author Brooke Tibbett
- * @version 3/25/19
+ * @version 3/26/19
  *
  */
-public class Unfriendly
+public class Unfriendlier
 {
 
     public static void main(String [] args)
@@ -57,8 +57,14 @@ public class Unfriendly
 
         Collections.shuffle(ordering);        
 
-        int blue;
-        int red;
+        int blue = 0;
+        int red = 0;
+        int blue2 = 0;
+        int red2 = 0;
+        Iterator<Integer> it;
+        Iterator<Integer> it2;
+        Iterator<Integer> it3;
+        boolean neighborsCond;
 
         while(unstable)
         {
@@ -76,7 +82,7 @@ public class Unfriendly
                 red = 0;
 
                 //loop through neighbors and count how many of each color
-                Iterator<Integer> it = graph.neighbors(v);
+                it = graph.neighbors(v);
                 while(it.hasNext())
                 {
                     int neighbor = it.next();
@@ -86,13 +92,57 @@ public class Unfriendly
                 
                 if(color[v] == 1 && blue > red) 
                 {
-                    color[v] = 0;
-                    unstable = true;
+                    it2 = graph.neighbors(v);
+                    neighborsCond = true;
+                    while(it2.hasNext())
+                    {
+                        int neighbor2 = it2.next();
+                        it3 = graph.neighbors(neighbor2);
+                        while(it3.hasNext())
+                        {
+                            blue2 = 0;
+                            red2 = 0;
+                            int neighbor3 = it3.next();
+                            if(color[neighbor3] == 1) blue2++;
+                            else red2++;
+                        }
+                        if(blue2 - red2 > blue - red)
+                        {
+                            neighborsCond = false;
+                        }
+                    }
+                    if(neighborsCond)
+                    {
+                        color[v] = 0;
+                        unstable = true;
+                    }
                 }
                 else if(color[v] == 0 && red > blue) 
                 {
-                    color[v] = 1;
-                    unstable = true;
+                    it2 = graph.neighbors(v);
+                    neighborsCond = true;
+                    while(it2.hasNext())
+                    {
+                        int neighbor2 = it2.next();
+                        it3 = graph.neighbors(neighbor2);
+                        while(it3.hasNext())
+                        {
+                            blue2 = 0;
+                            red2 = 0;
+                            int neighbor3 = it3.next();
+                            if(color[neighbor3] == 1) blue2++;
+                            else red2++;
+                        }
+                        if(red2 - blue2 > red - blue)
+                        {
+                            neighborsCond = false;
+                        }
+                    }
+                    if(neighborsCond)
+                    {
+                        color[v] = 1;
+                        unstable = true;
+                    }
                 }
             }
         }
