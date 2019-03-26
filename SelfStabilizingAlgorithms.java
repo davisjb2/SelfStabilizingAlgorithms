@@ -45,23 +45,22 @@ public class SelfStabilizingAlgorithms
         rand = new Random();
         // Randomly color graph
         initializeGraph();
+        initializeOrdering();
         System.out.println("Starting network: " + Arrays.toString(color));
-        // Create random permutation of graph
-        shuffleGraph();
         startTime = System.nanoTime();
         runUnfriendly();
         runTime = System.nanoTime() - startTime;
         System.out.println("Unfriendly graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.\n");
+        initializeGraph();
         System.out.println("Starting network: " + Arrays.toString(color));
-        shuffleGraph();
         startTime = System.nanoTime();
         runUnfriendlier();
         runTime = System.nanoTime() - startTime;
         System.out.println("Unfriendlier graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.\n");
+        initializeGraph();
         System.out.println("Starting network: " + Arrays.toString(color));
-        shuffleGraph();
         startTime = System.nanoTime();
         runMoreUnfriendly();
         runTime = System.nanoTime() - startTime;
@@ -77,6 +76,16 @@ public class SelfStabilizingAlgorithms
         for(int i = 0; i < order; i++)
         {
             color[i] = rand.nextInt(2);
+        }
+    }
+
+    /**
+     * Initialize ordering arraylist
+     */
+    public void initializeOrdering()
+    {
+        for(int i = 0; i < order; i++)
+        {
             ordering.add(i);
         }
     }
