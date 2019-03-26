@@ -26,6 +26,8 @@ public class SelfStabilizingAlgorithms
     private ArrayList<Integer> ordering;
     boolean unstable;
     Random rand;
+    long startTime;
+    long runTime;
 
     public SelfStabilizingAlgorithms(String filename)
     {
@@ -46,18 +48,25 @@ public class SelfStabilizingAlgorithms
         System.out.println("Starting network: " + Arrays.toString(color));
         // Create random permutation of graph
         shuffleGraph();
+        startTime = System.nanoTime();
         runUnfriendly();
+        runTime = System.nanoTime() - startTime;
         System.out.println("Unfriendly graph: " + Arrays.toString(color));
-        System.out.println();
+        System.out.println("Ran in " + runTime + " ns.\n");
         System.out.println("Starting network: " + Arrays.toString(color));
         shuffleGraph();
+        startTime = System.nanoTime();
         runUnfriendlier();
+        runTime = System.nanoTime() - startTime;
         System.out.println("Unfriendlier graph: " + Arrays.toString(color));
-        System.out.println();
+        System.out.println("Ran in " + runTime + " ns.\n");
         System.out.println("Starting network: " + Arrays.toString(color));
         shuffleGraph();
+        startTime = System.nanoTime();
         runMoreUnfriendly();
+        runTime = System.nanoTime() - startTime;
         System.out.println("More Unfriendly graph: " + Arrays.toString(color));
+        System.out.println("Ran in " + runTime + " ns.");
     }
 
     /**
