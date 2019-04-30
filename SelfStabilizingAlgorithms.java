@@ -53,6 +53,7 @@ public class SelfStabilizingAlgorithms
         System.out.println("Unfriendly graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.\n");
         initializeGraph();
+        unstable = true;
         System.out.println("Starting network: " + Arrays.toString(color));
         startTime = System.nanoTime();
         runUnfriendlier();
@@ -60,6 +61,7 @@ public class SelfStabilizingAlgorithms
         System.out.println("Unfriendlier graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.\n");
         initializeGraph();
+        unstable = true;
         System.out.println("Starting network: " + Arrays.toString(color));
         startTime = System.nanoTime();
         runMoreUnfriendly();
