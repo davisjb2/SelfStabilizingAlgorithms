@@ -34,7 +34,7 @@ public class SelfStabilizingAlgorithms
     long startTime;
     long runTime;
 
-    public SelfStabilizingAlgorithms(String filename)
+    public SelfStabilizingAlgorithms(String filename, boolean maximal)
     {
         // Read the graph
         graph = new AdjacencyLists(filename);
@@ -78,17 +78,20 @@ public class SelfStabilizingAlgorithms
         runTime = System.nanoTime() - startTime;
         System.out.println("More Unfriendly graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.");
-        initializeGraph();
-        System.out.println("-------------------------------------------");
-        System.out.println("         Maximal Matching Algorithm        ");
-        System.out.println("-------------------------------------------");
-        unstable = true;
-        System.out.println("Starting network: " + Arrays.toString(matches));
-        startTime = System.nanoTime();
-        runMaximalMatching();
-        runTime = System.nanoTime() - startTime;
-        System.out.println("Maximal matching: " + Arrays.toString(matches));
-        System.out.println("Ran in " + runTime + " ns.");
+        if(maximal)
+        {
+            initializeGraph();
+            System.out.println("-------------------------------------------");
+            System.out.println("         Maximal Matching Algorithm        ");
+            System.out.println("-------------------------------------------");
+            unstable = true;
+            System.out.println("Starting network: " + Arrays.toString(matches));
+            startTime = System.nanoTime();
+            runMaximalMatching();
+            runTime = System.nanoTime() - startTime;
+            System.out.println("Maximal matching: " + Arrays.toString(matches));
+            System.out.println("Ran in " + runTime + " ns.");
+        }
     }
 
     /**
@@ -449,12 +452,12 @@ public class SelfStabilizingAlgorithms
 
     public static void main(String[] args)
     {
-        if (args.length == 0)
+        if (args.length == 0 || (args.length == 2 && !args[1].equals("-m")))
         {
-            System.out.println("Usage: java SelfStabilizingAlgorithms <filename>");
+            System.out.println("Usage: java SelfStabilizingAlgorithms <filename> (options: -m)");
             System.exit(0);
         }
 
-        SelfStabilizingAlgorithms st = new SelfStabilizingAlgorithms(args[0]);
+        SelfStabilizingAlgorithms st = new SelfStabilizingAlgorithms(args[0],(args.length == 2 && args[1].equals("-m")));
     }
 }
