@@ -7,12 +7,16 @@ import java.util.Iterator;
 
 /**
  * Self-Stabilizing Algorithms
- * Based on the paper "Self-Stablizing Algorithms for Unfriendly Partitions"
+ * First three algorithms based on the paper 
+ * "Self-Stablizing Algorithms for Unfriendly Partitions"
  * by Sandra Hedetniemi, Stephen Hedetniemi, K.E. Kennedy, and Alice McRae.
+ * 
+ * Last algorithm based on "Maximal matching stabilizes in time O(m)" by 
+ * Stephen Hedetniemi, David Jacobs, Pradip Srimani.
  *
  * This code is supposed to work like a wrapper for a self-stabilizing
  * algorithm. This code will build the graph based on a text file and 
- * do the setup to run an algorithm.
+ * do the setup to run an algorithms which are then implemented as methods.
  * 
  * @author Brooke Tibbett
  * @version 3/25/19
@@ -377,11 +381,13 @@ public class SelfStabilizingAlgorithms
 
     /**
     * This code is an implementation of the Maximal Matching Algorithm in
-    * Hedetniemi's "Maximal matching stabilizes in time O(m)" paper.
+    * the second paper referenced.
     */
     public void runMaximalMatching()
     {
+        //boolean for rule 1
         boolean rule1 = false;
+        //needed to hold a neighbor with -1 match
         int nullneighbor = -1;
 
         while(unstable)
@@ -395,33 +401,47 @@ public class SelfStabilizingAlgorithms
             {
                 //current vertex
                 int v = ordering.get(i);
+                //get match of current vertex
                 int match = matches[v];
-
-                if(match != -1 && matches[match] != v)
+                //Rule 3: if v is matched to j and j is matched to antoher vertex
+                //then set v's match to -1
+                if(match != -1 && matches[match] != v && matches[match] != -1)
                 {
                     matches[v] = -1;
                     unstable = true;
-                } else if(match == -1)
+                }
+                //match for v is null for Rule 1 & 2
+                else if(match == -1)
                 {
-                    unstable = true;
+                    //reset rule1 flag
                     rule1 = false;
+                    //reset nullneighbor
                     nullneighbor = -1;
+                    //go through neighbors of v
                     Iterator<Integer> it = graph.neighbors(v);
                     while(it.hasNext())
                     {
                         int neighbor = it.next();
+                        //Rule 1: if one of v's neighbors, j, has v as its match
+                        //then set v's match to j
                         if(matches[neighbor] == v)
                         {
                             matches[v] = neighbor;
+                            unstable = true;
                             rule1 = true;
                             break;
-                        } else if(matches[neighbor] == -1) nullneighbor = neighbor;
+                        }
+                        //keep a neighbor with -1 match for if/when v doesn't move on rule 1 
+                        else if(matches[neighbor] == -1) nullneighbor = neighbor;
                     }
+                    //if rule 1 didn't happen and rule 2
+                    //Rule 2: if v has a neighbor with -1 match then make that neighbor
+                    //v's match
                     if(!rule1 && nullneighbor != -1)
                     {
                         matches[v] = nullneighbor;
+                        unstable = true;
                     }
-
                 }
             }
         } 
