@@ -23,6 +23,7 @@ public class SelfStabilizingAlgorithms
     private AdjacencyLists graph;
     private int order;
     private int [] color;
+    private int [] matches;
     private ArrayList<Integer> ordering;
     boolean unstable;
     Random rand;
@@ -37,6 +38,7 @@ public class SelfStabilizingAlgorithms
         order = graph.order();
         // Color array will hold the colors of each vertex;
         color = new int[order];
+        matches = new int[order];
         // Array to hold random permutation of nodes
         ordering = new ArrayList<Integer>();
         // Flag to know when the network is stable
@@ -46,6 +48,10 @@ public class SelfStabilizingAlgorithms
         // Randomly color graph
         initializeGraph();
         initializeOrdering();
+        initializeMatches();
+        System.out.println("-------------------------------------------");
+        System.out.println("       Unfriendly Partition Algorithms     ");
+        System.out.println("-------------------------------------------");
         System.out.println("Starting network: " + Arrays.toString(color));
         startTime = System.nanoTime();
         runUnfriendly();
@@ -68,6 +74,17 @@ public class SelfStabilizingAlgorithms
         runTime = System.nanoTime() - startTime;
         System.out.println("More Unfriendly graph: " + Arrays.toString(color));
         System.out.println("Ran in " + runTime + " ns.");
+        initializeGraph();
+        System.out.println("-------------------------------------------");
+        System.out.println("         Maximal Matching Algorithm        ");
+        System.out.println("-------------------------------------------");
+        unstable = true;
+        System.out.println("Starting network: " + Arrays.toString(matches));
+        startTime = System.nanoTime();
+        runMaximalMatching();
+        runTime = System.nanoTime() - startTime;
+        System.out.println("Maximal matching: " + Arrays.toString(matches));
+        System.out.println("Ran in " + runTime + " ns.");
     }
 
     /**
@@ -78,6 +95,17 @@ public class SelfStabilizingAlgorithms
         for(int i = 0; i < order; i++)
         {
             color[i] = rand.nextInt(2);
+        }
+    }
+
+    /**
+    * Initialize the matches to -1
+    */
+    public void initializeMatches()
+    {
+        for(int i = 0; i < order; i++)
+        {
+            matches[i] = -1;
         }
     }
 
@@ -345,6 +373,58 @@ public class SelfStabilizingAlgorithms
             }
         }
 
+    }
+
+    /**
+    * This code is an implementation of the Maximal Matching Algorithm in
+    * Hedetniemi's "Maximal matching stabilizes in time O(m)" paper.
+    */
+    public void runMaximalMatching()
+    {
+        boolean rule1 = false;
+        int nullneighbor = -1;
+
+        while(unstable)
+        {
+            //reset unstable flag
+            unstable = false;
+            //reshuffle ordering of permutation
+            Collections.shuffle(ordering);
+
+            for (int i = 0; i < order; i++)
+            {
+                //current vertex
+                int v = ordering.get(i);
+                int match = matches[v];
+
+                if(match != -1 && matches[match] != v)
+                {
+                    matches[v] = -1;
+                    unstable = true;
+                } else if(match == -1)
+                {
+                    unstable = true;
+                    rule1 = false;
+                    nullneighbor = -1;
+                    Iterator<Integer> it = graph.neighbors(v);
+                    while(it.hasNext())
+                    {
+                        int neighbor = it.next();
+                        if(matches[neighbor] == v)
+                        {
+                            matches[v] = neighbor;
+                            rule1 = true;
+                            break;
+                        } else if(matches[neighbor] == -1) nullneighbor = neighbor;
+                    }
+                    if(!rule1 && nullneighbor != -1)
+                    {
+                        matches[v] = nullneighbor;
+                    }
+
+                }
+            }
+        } 
     }
 
     public static void main(String[] args)
